@@ -17,8 +17,8 @@ const DAILY_RUN_INTERVAL = 24 * 60 * 60 * 1000;
 const MIN_TX_DELAY = 1 * 60 * 1000;
 const MAX_TX_DELAY = 3 * 60 * 1000;
 
-const SWAP_MIN_AMOUNT = 0.1;
-const SWAP_MAX_AMOUNT = 1.0;
+const SWAP_MIN_AMOUNT = 3;
+const SWAP_MAX_AMOUNT = 10;
 
 let cycleStartTime = null;
 
