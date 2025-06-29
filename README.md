@@ -1,6 +1,15 @@
 # Pharos-Faro-Swap
 
-Pharos Auto Bot via Faroswap
+| Fitur                           | Penjelasan                                                               |
+| ------------------------------- | ------------------------------------------------------------------------ |
+| ✅ Multi-wallet                  | Dapat menangani banyak wallet dalam satu file `privatekeys.txt`          |
+| ✅ Check-in harian otomatis      | Melakukan daily task (sign in) untuk farming point di testnet Pharos     |
+| ✅ Stablecoin swap bolak-balik   | Swap 10x per wallet: USDC → USDT → USDC → ... (bergantian)               |
+| ✅ Delay acak transaksi          | Menghindari pola bot yang jelas terlihat                                 |
+| ✅ Estimasi & cek saldo otomatis | Tidak akan swap jika saldo token tidak cukup                             |
+| ✅ Retry otomatis jika gagal     | Menangani error koneksi dengan retry                                     |
+| ✅ Auto schedule harian          | Script akan berjalan setiap 24 jam otomatis tanpa perlu dijalankan ulang |
+
 
 ## How to run? Join Our Telegram Channel
 
