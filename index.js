@@ -141,8 +141,11 @@ async function performPharoswapSwap(privateKey, walletAddress, txIndex) {
     const rawAmount = Math.random() * (SWAP_MAX_AMOUNT - SWAP_MIN_AMOUNT) + SWAP_MIN_AMOUNT;
     const amountIn = web3.utils.toBN((rawAmount * Math.pow(10, decimals)).toFixed(0));
 
+    const actual = Number(tokenBalance) / Number(multiplier);
+    console.log(`💵 ${isUsdcToUsdt ? 'USDC' : 'USDT'} Balance: ${actual.toFixed(6)}`);
+    console.log(`🔄 Will try to swap: ${rawAmount.toFixed(6)} ${isUsdcToUsdt ? 'USDC' : 'USDT'}`);
+
     if (tokenBalanceBN.lt(amountIn)) {
-      const actual = Number(tokenBalance) / Number(multiplier);
       console.log(`⚠️ Skip swap, balance too low. Needed: ${rawAmount.toFixed(6)}, Wallet has: ${actual}`);
       return;
     }
