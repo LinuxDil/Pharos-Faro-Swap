@@ -76,7 +76,7 @@ async function withRetry(fn, maxRetries = 5, backoffBase = 5000) {
 }
 
 function readPrivateKeys() {
-  const keys = fs.readFileSync('private_keys.txt', 'utf-8')
+  const keys = fs.readFileSync('privatekeys.txt', 'utf-8')
     .split('\n')
     .map(pk => pk.trim())
     .filter(pk => pk !== '');
