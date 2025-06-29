@@ -17,7 +17,7 @@ const DAILY_RUN_INTERVAL = 24 * 60 * 60 * 1000;
 const MIN_TX_DELAY = 1 * 60 * 1000;
 const MAX_TX_DELAY = 3 * 60 * 1000;
 
-// User-configurable swap amount range (in tokens)
+// Default swap amount range
 const SWAP_MIN_AMOUNT = 0.1;
 const SWAP_MAX_AMOUNT = 1.0;
 
@@ -137,11 +137,6 @@ async function performPharoswapSwap(privateKey, walletAddress, txIndex) {
     const tokenBalanceBN = web3.utils.toBN(tokenBalance);
 
     const rawAmount = Math.random() * (SWAP_MAX_AMOUNT - SWAP_MIN_AMOUNT) + SWAP_MIN_AMOUNT;
-    if (rawAmount <= 0) {
-      console.log(`⚠️ Invalid amount generated: ${rawAmount.toFixed(6)}`);
-      return;
-    }
-
     const amountIn = web3.utils.toBN(web3.utils.toWei(rawAmount.toFixed(6)));
     if (tokenBalanceBN.lt(amountIn)) {
       console.log(`⚠️ Skip swap, balance too low. Required: ${rawAmount.toFixed(6)}`);
