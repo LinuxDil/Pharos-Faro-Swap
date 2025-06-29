@@ -16,6 +16,7 @@ const STABLE_COINS = {
 const DAILY_RUN_INTERVAL = 24 * 60 * 60 * 1000;
 const MIN_TX_DELAY = 1 * 60 * 1000;
 const MAX_TX_DELAY = 3 * 60 * 1000;
+const MIN_SWAP_AMOUNT = 0.1; // in token units (e.g., 0.1 USDC)
 
 let cycleStartTime = null;
 
@@ -130,15 +131,17 @@ async function performPharoswapSwap(privateKey, walletAddress, txIndex) {
     const fromTokenContract = new web3.eth.Contract(erc20Abi, fromToken);
 
     const tokenBalance = await fromTokenContract.methods.balanceOf(walletAddress).call();
-    const decimals = await fromTokenContract.methods.decimals().call();
     const tokenBalanceBN = web3.utils.toBN(tokenBalance);
 
     const swapFraction = Math.random() * 0.4 + 0.1;
-    const amountIn = tokenBalanceBN.muln(swapFraction * 100).divn(100);
-    if (amountIn.isZero()) {
-      console.log(`⚠️ Skip swap, token balance too low`);
+    const rawAmount = parseFloat(web3.utils.fromWei(tokenBalanceBN)) * swapFraction;
+
+    if (rawAmount < MIN_SWAP_AMOUNT) {
+      console.log(`⚠️ Skip swap, random amount (${rawAmount.toFixed(6)}) < minimum (${MIN_SWAP_AMOUNT})`);
       return;
     }
+
+    const amountIn = web3.utils.toBN(web3.utils.toWei(rawAmount.toFixed(6)));
 
     const allowance = await fromTokenContract.methods.allowance(walletAddress, PHAROSWAP_ROUTER).call();
     if (web3.utils.toBN(allowance).lt(amountIn)) {
@@ -194,7 +197,7 @@ async function performPharoswapSwap(privateKey, walletAddress, txIndex) {
     const signedTx = await web3.eth.accounts.signTransaction(tx, privateKey);
     const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
 
-    console.log(`✅ TX #${txIndex + 1}: Swapped ${web3.utils.fromWei(amountIn)} ${isUsdcToUsdt ? 'USDC → USDT' : 'USDT → USDC'} | TX: ${receipt.transactionHash}`);
+    console.log(`✅ TX #${txIndex + 1}: Swapped ${rawAmount.toFixed(6)} ${isUsdcToUsdt ? 'USDC → USDT' : 'USDT → USDC'} | TX: ${receipt.transactionHash}`);
   } catch (e) {
     console.error(`❌ TX #${txIndex + 1} swap error:`, e.message);
   } finally {
