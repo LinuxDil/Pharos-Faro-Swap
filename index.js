@@ -33,18 +33,14 @@ const web3 = new Web3(RPC_URL);
 function showWelcomeBox() {
   console.log("\n===============================");
   console.log("        PHAROS AUTO BOT       ");
-  console.log("         Airdrop Seeker       ");
+  console.log("     Stablecoin Swap Edition  ");
   console.log("===============================\n");
 }
 
 function formatTime(ms) {
   return new Date(ms).toLocaleString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: true
+    month: 'short', day: 'numeric', hour: 'numeric',
+    minute: '2-digit', second: '2-digit', hour12: true
   });
 }
 
@@ -90,13 +86,7 @@ async function loginUser(privateKey) {
   const response = await axios.post(
     `https://api.pharosnetwork.xyz/user/login?address=${account.address}&signature=${signature}`,
     null,
-    {
-      headers: {
-        ...commonHeaders,
-        'authorization': 'Bearer null',
-        'content-length': '0'
-      }
-    }
+    { headers: { ...commonHeaders, 'authorization': 'Bearer null', 'content-length': '0' } }
   );
   if (response.data.code !== 0) throw new Error(`Login failed: ${response.data.msg}`);
   const jwt = response.data.data?.jwt || response.data.jwt;
@@ -121,41 +111,78 @@ async function checkInUser(address, token) {
   else throw new Error(`Check-in failed: ${response.data.msg}`);
 }
 
-async function performPharoswapSwap(privateKey, walletAddress) {
+async function performPharoswapSwap(privateKey, walletAddress, txIndex) {
   const account = web3.eth.accounts.privateKeyToAccount(privateKey);
   web3.eth.accounts.wallet.add(account);
+
   try {
-    const stableCoin = Object.values(STABLE_COINS)[Math.floor(Math.random() * Object.values(STABLE_COINS).length)];
-    const ethAmount = (Math.random() * 0.0008 + 0.0001).toFixed(4);
-    const amountInWei = web3.utils.toWei(ethAmount, 'ether');
+    const isUsdcToUsdt = txIndex % 2 === 0;
+    const fromToken = isUsdcToUsdt ? STABLE_COINS.USDC : STABLE_COINS.USDT;
+    const toToken = isUsdcToUsdt ? STABLE_COINS.USDT : STABLE_COINS.USDC;
 
-    const balanceWei = await web3.eth.getBalance(walletAddress);
-    const gasPrice = await web3.eth.getGasPrice();
-    const estimatedGasCost = web3.utils.toBN(gasPrice).mul(web3.utils.toBN(150000));
+    const erc20Abi = [
+      'function approve(address spender, uint256 amount) public returns (bool)',
+      'function allowance(address owner, address spender) public view returns (uint256)',
+      'function balanceOf(address account) external view returns (uint256)',
+      'function decimals() view returns (uint8)'
+    ];
+    const fromTokenContract = new web3.eth.Contract(erc20Abi, fromToken);
 
-    if (web3.utils.toBN(balanceWei).lt(web3.utils.toBN(amountInWei).add(estimatedGasCost))) {
-      console.log(`⚠️ Skip swap, not enough balance. Balance: ${web3.utils.fromWei(balanceWei)} ETH`);
+    const tokenBalance = await fromTokenContract.methods.balanceOf(walletAddress).call();
+    const decimals = await fromTokenContract.methods.decimals().call();
+    const tokenBalanceBN = web3.utils.toBN(tokenBalance);
+
+    const swapFraction = Math.random() * 0.4 + 0.1;
+    const amountIn = tokenBalanceBN.muln(swapFraction * 100).divn(100);
+    if (amountIn.isZero()) {
+      console.log(`⚠️ Skip swap, token balance too low`);
       return;
     }
 
+    const allowance = await fromTokenContract.methods.allowance(walletAddress, PHAROSWAP_ROUTER).call();
+    if (web3.utils.toBN(allowance).lt(amountIn)) {
+      const approveTx = fromTokenContract.methods.approve(PHAROSWAP_ROUTER, web3.utils.toHex(amountIn));
+      const gas = await approveTx.estimateGas({ from: walletAddress });
+      const gasPrice = await web3.eth.getGasPrice();
+      const txData = {
+        from: walletAddress,
+        to: fromToken,
+        data: approveTx.encodeABI(),
+        gas,
+        gasPrice,
+        nonce: await web3.eth.getTransactionCount(walletAddress, 'pending'),
+        chainId: CHAIN_ID
+      };
+      const signed = await web3.eth.accounts.signTransaction(txData, privateKey);
+      const approveReceipt = await web3.eth.sendSignedTransaction(signed.rawTransaction);
+      console.log(`✅ Approved ${isUsdcToUsdt ? 'USDC' : 'USDT'}: TX ${approveReceipt.transactionHash}`);
+    }
+
     const deadline = Math.floor(Date.now() / 1000) + 600;
-    const mixSwapData = web3.eth.abi.encodeFunctionCall({
-      name: 'swapExactETHForTokens',
+    const swapData = web3.eth.abi.encodeFunctionCall({
+      name: 'swapExactTokensForTokens',
       type: 'function',
       inputs: [
+        { name: 'amountIn', type: 'uint256' },
         { name: 'amountOutMin', type: 'uint256' },
         { name: 'path', type: 'address[]' },
         { name: 'to', type: 'address' },
         { name: 'deadline', type: 'uint256' }
       ]
-    }, ['0', [WETH_CONTRACT, stableCoin], walletAddress, deadline]);
+    }, [
+      amountIn.toString(),
+      '0',
+      [fromToken, toToken],
+      walletAddress,
+      deadline
+    ]);
 
+    const gasPrice = await web3.eth.getGasPrice();
     const tx = {
       from: walletAddress,
       to: PHAROSWAP_ROUTER,
-      value: amountInWei,
-      data: mixSwapData,
-      gasPrice: gasPrice,
+      data: swapData,
+      gasPrice,
       nonce: await web3.eth.getTransactionCount(walletAddress, 'pending'),
       chainId: CHAIN_ID
     };
@@ -166,14 +193,9 @@ async function performPharoswapSwap(privateKey, walletAddress) {
     const signedTx = await web3.eth.accounts.signTransaction(tx, privateKey);
     const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
 
-    if (!receipt || !receipt.transactionHash) {
-      console.error('❌ Failed to get transaction receipt (possibly dropped TX)');
-      return;
-    }
-
-    console.log(`✅ Pharoswap: ${ethAmount} ETH → ${stableCoin} | TX: ${receipt.transactionHash}`);
+    console.log(`✅ TX #${txIndex + 1}: Swapped ${web3.utils.fromWei(amountIn)} ${isUsdcToUsdt ? 'USDC → USDT' : 'USDT → USDC'} | TX: ${receipt.transactionHash}`);
   } catch (e) {
-    console.error('❌ Pharoswap error:', e.message);
+    console.error(`❌ TX #${txIndex + 1} swap error:`, e.message);
   } finally {
     web3.eth.accounts.wallet.remove(account.address);
   }
@@ -185,7 +207,7 @@ async function processWallet(privateKey, index, total) {
     const { address, token } = await withRetry(() => loginUser(privateKey));
     await withRetry(() => checkInUser(address, token), 5);
     for (let i = 0; i < 10; i++) {
-      await withRetry(() => performPharoswapSwap(privateKey, address), 3);
+      await withRetry(() => performPharoswapSwap(privateKey, address, i), 3);
       await new Promise(resolve => setTimeout(resolve, getRandomTxDelay()));
     }
     return { success: true };
