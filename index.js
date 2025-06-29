@@ -31,10 +31,10 @@ const commonHeaders = {
 const web3 = new Web3(RPC_URL);
 
 function showWelcomeBox() {
-  console.log("\n============================");
+  console.log("\n===============================");
   console.log("        PHAROS AUTO BOT       ");
   console.log("         Airdrop Seeker       ");
-  console.log("============================\n");
+  console.log("===============================\n");
 }
 
 function formatTime(ms) {
