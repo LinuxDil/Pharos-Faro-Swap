@@ -16,7 +16,10 @@ const STABLE_COINS = {
 const DAILY_RUN_INTERVAL = 24 * 60 * 60 * 1000;
 const MIN_TX_DELAY = 1 * 60 * 1000;
 const MAX_TX_DELAY = 3 * 60 * 1000;
-const MIN_SWAP_AMOUNT = 0.1; // in token units (e.g., 0.1 USDC)
+
+// User-configurable swap amount range (in tokens)
+const SWAP_MIN_AMOUNT = 0.1;
+const SWAP_MAX_AMOUNT = 1.0;
 
 let cycleStartTime = null;
 
@@ -36,6 +39,7 @@ function showWelcomeBox() {
   console.log("        PHAROS AUTO BOT       ");
   console.log("     Stablecoin Swap Edition  ");
   console.log("===============================\n");
+  console.log(`💰 Swap range: ${SWAP_MIN_AMOUNT} – ${SWAP_MAX_AMOUNT} token`);
 }
 
 function formatTime(ms) {
@@ -129,19 +133,20 @@ async function performPharoswapSwap(privateKey, walletAddress, txIndex) {
     ];
 
     const fromTokenContract = new web3.eth.Contract(erc20Abi, fromToken);
-
     const tokenBalance = await fromTokenContract.methods.balanceOf(walletAddress).call();
     const tokenBalanceBN = web3.utils.toBN(tokenBalance);
 
-    const swapFraction = Math.random() * 0.4 + 0.1;
-    const rawAmount = parseFloat(web3.utils.fromWei(tokenBalanceBN)) * swapFraction;
-
-    if (rawAmount < MIN_SWAP_AMOUNT) {
-      console.log(`⚠️ Skip swap, random amount (${rawAmount.toFixed(6)}) < minimum (${MIN_SWAP_AMOUNT})`);
+    const rawAmount = Math.random() * (SWAP_MAX_AMOUNT - SWAP_MIN_AMOUNT) + SWAP_MIN_AMOUNT;
+    if (rawAmount <= 0) {
+      console.log(`⚠️ Invalid amount generated: ${rawAmount.toFixed(6)}`);
       return;
     }
 
     const amountIn = web3.utils.toBN(web3.utils.toWei(rawAmount.toFixed(6)));
+    if (tokenBalanceBN.lt(amountIn)) {
+      console.log(`⚠️ Skip swap, balance too low. Required: ${rawAmount.toFixed(6)}`);
+      return;
+    }
 
     const allowance = await fromTokenContract.methods.allowance(walletAddress, PHAROSWAP_ROUTER).call();
     if (web3.utils.toBN(allowance).lt(amountIn)) {
