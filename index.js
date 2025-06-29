@@ -121,11 +121,12 @@ async function performPharoswapSwap(privateKey, walletAddress, txIndex) {
     const toToken = isUsdcToUsdt ? STABLE_COINS.USDT : STABLE_COINS.USDC;
 
     const erc20Abi = [
-      'function approve(address spender, uint256 amount) public returns (bool)',
-      'function allowance(address owner, address spender) public view returns (uint256)',
-      'function balanceOf(address account) external view returns (uint256)',
-      'function decimals() view returns (uint8)'
+      { constant: true, inputs: [{ name: 'owner', type: 'address' }, { name: 'spender', type: 'address' }], name: 'allowance', outputs: [{ name: '', type: 'uint256' }], type: 'function' },
+      { constant: true, inputs: [{ name: 'account', type: 'address' }], name: 'balanceOf', outputs: [{ name: '', type: 'uint256' }], type: 'function' },
+      { constant: true, inputs: [], name: 'decimals', outputs: [{ name: '', type: 'uint8' }], type: 'function' },
+      { constant: false, inputs: [{ name: 'spender', type: 'address' }, { name: 'amount', type: 'uint256' }], name: 'approve', outputs: [{ name: '', type: 'bool' }], type: 'function' }
     ];
+
     const fromTokenContract = new web3.eth.Contract(erc20Abi, fromToken);
 
     const tokenBalance = await fromTokenContract.methods.balanceOf(walletAddress).call();
