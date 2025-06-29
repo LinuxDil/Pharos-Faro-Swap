@@ -17,7 +17,6 @@ const DAILY_RUN_INTERVAL = 24 * 60 * 60 * 1000;
 const MIN_TX_DELAY = 1 * 60 * 1000;
 const MAX_TX_DELAY = 3 * 60 * 1000;
 
-// Default swap amount range
 const SWAP_MIN_AMOUNT = 0.1;
 const SWAP_MAX_AMOUNT = 1.0;
 
@@ -139,7 +138,8 @@ async function performPharoswapSwap(privateKey, walletAddress, txIndex) {
     const rawAmount = Math.random() * (SWAP_MAX_AMOUNT - SWAP_MIN_AMOUNT) + SWAP_MIN_AMOUNT;
     const amountIn = web3.utils.toBN(web3.utils.toWei(rawAmount.toFixed(6)));
     if (tokenBalanceBN.lt(amountIn)) {
-      console.log(`⚠️ Skip swap, balance too low. Required: ${rawAmount.toFixed(6)}`);
+      const actual = web3.utils.fromWei(tokenBalanceBN);
+      console.log(`⚠️ Skip swap, balance too low. Needed: ${rawAmount.toFixed(6)}, Wallet has: ${actual}`);
       return;
     }
 
@@ -206,7 +206,12 @@ async function performPharoswapSwap(privateKey, walletAddress, txIndex) {
 }
 
 async function processWallet(privateKey, index, total) {
+  const account = web3.eth.accounts.privateKeyToAccount(privateKey);
+  const walletAddress = account.address;
+
   console.log(`\n══════════ Wallet ${index + 1}/${total} ══════════`);
+  console.log(`🏦 Address: ${walletAddress}`);
+
   try {
     const { address, token } = await withRetry(() => loginUser(privateKey));
     await withRetry(() => checkInUser(address, token), 5);
