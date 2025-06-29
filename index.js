@@ -34,10 +34,10 @@ const commonHeaders = {
 const web3 = new Web3(RPC_URL);
 
 function showWelcomeBox() {
-  console.log("\n=======================================");
+  console.log("\n=========================================");
   console.log("             PHAROS AUTO BOT            ");
   console.log("   https://t.me/AirdropSeeker_Official  ");
-  console.log("=======================================\n");
+  console.log("=========================================\n");
   console.log(`💰 Swap range: ${SWAP_MIN_AMOUNT} – ${SWAP_MAX_AMOUNT} token`);
 }
 
