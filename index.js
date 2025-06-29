@@ -138,7 +138,7 @@ async function performPharoswapSwap(privateKey, walletAddress, txIndex) {
     const tokenBalance = await fromTokenContract.methods.balanceOf(walletAddress).call();
     const tokenBalanceBN = web3.utils.toBN(tokenBalance);
 
-    const rawAmount = parseFloat((Math.random() * (SWAP_MAX_AMOUNT - SWAP_MIN_AMOUNT) + SWAP_MIN_AMOUNT).toFixed(2));
+    const rawAmount = parseFloat((Math.random() * (SWAP_MAX_AMOUNT - SWAP_MIN_AMOUNT) + SWAP_MIN_AMOUNT).toFixed(1));
     const amountIn = web3.utils.toBN((rawAmount * Math.pow(10, decimals)).toFixed(0));
 
     const actual = Number(tokenBalance) / Number(multiplier);
