@@ -36,7 +36,7 @@ const web3 = new Web3(RPC_URL);
 function showWelcomeBox() {
   console.log("\n===============================");
   console.log("        PHAROS AUTO BOT       ");
-  console.log("     Stablecoin Swap Edition  ");
+  console.log("   https://t.me/AirdropSeeker_Official  ");
   console.log("===============================\n");
   console.log(`💰 Swap range: ${SWAP_MIN_AMOUNT} – ${SWAP_MAX_AMOUNT} token`);
 }
@@ -143,10 +143,10 @@ async function performPharoswapSwap(privateKey, walletAddress, txIndex) {
 
     const actual = Number(tokenBalance) / Number(multiplier);
     console.log(`💵 ${isUsdcToUsdt ? 'USDC' : 'USDT'} Balance: ${actual.toFixed(6)}`);
-    console.log(`🔄 Will try to swap: ${rawAmount.toFixed(2)} ${isUsdcToUsdt ? 'USDC' : 'USDT'}`);
+    console.log(`🔄 Will try to swap: ${rawAmount} ${isUsdcToUsdt ? 'USDC' : 'USDT'}`);
 
     if (tokenBalanceBN.lt(amountIn)) {
-      console.log(`⚠️ Skip swap, balance too low. Needed: ${rawAmount.toFixed(2)}, Wallet has: ${actual}`);
+      console.log(`⚠️ Skip swap, balance too low. Needed: ${rawAmount}, Wallet has: ${actual}`);
       return;
     }
 
@@ -204,7 +204,7 @@ async function performPharoswapSwap(privateKey, walletAddress, txIndex) {
     const signedTx = await web3.eth.accounts.signTransaction(tx, privateKey);
     const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
 
-    console.log(`✅ TX #${txIndex + 1}: Swapped ${rawAmount.toFixed(2)} ${isUsdcToUsdt ? 'USDC → USDT' : 'USDT → USDC'} | TX: ${receipt.transactionHash}`);
+    console.log(`✅ TX #${txIndex + 1}: Swapped ${rawAmount} ${isUsdcToUsdt ? 'USDC → USDT' : 'USDT → USDC'} | TX: ${receipt.transactionHash}`);
   } catch (e) {
     console.error(`❌ TX #${txIndex + 1} swap error:`, e.message);
   } finally {
