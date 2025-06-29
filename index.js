@@ -125,20 +125,24 @@ async function performPharoswapSwap(privateKey, walletAddress, txIndex) {
     const toToken = isUsdcToUsdt ? STABLE_COINS.USDT : STABLE_COINS.USDC;
 
     const erc20Abi = [
-      { constant: true, inputs: [{ name: 'owner', type: 'address' }, { name: 'spender', type: 'address' }], name: 'allowance', outputs: [{ name: '', type: 'uint256' }], type: 'function' },
-      { constant: true, inputs: [{ name: 'account', type: 'address' }], name: 'balanceOf', outputs: [{ name: '', type: 'uint256' }], type: 'function' },
-      { constant: true, inputs: [], name: 'decimals', outputs: [{ name: '', type: 'uint8' }], type: 'function' },
-      { constant: false, inputs: [{ name: 'spender', type: 'address' }, { name: 'amount', type: 'uint256' }], name: 'approve', outputs: [{ name: '', type: 'bool' }], type: 'function' }
+      { name: 'allowance', type: 'function', inputs: [{ name: 'owner', type: 'address' }, { name: 'spender', type: 'address' }], outputs: [{ name: '', type: 'uint256' }] },
+      { name: 'balanceOf', type: 'function', inputs: [{ name: 'account', type: 'address' }], outputs: [{ name: '', type: 'uint256' }] },
+      { name: 'decimals', type: 'function', inputs: [], outputs: [{ name: '', type: 'uint8' }] },
+      { name: 'approve', type: 'function', inputs: [{ name: 'spender', type: 'address' }, { name: 'amount', type: 'uint256' }], outputs: [{ name: '', type: 'bool' }] }
     ];
 
     const fromTokenContract = new web3.eth.Contract(erc20Abi, fromToken);
+    const decimals = await fromTokenContract.methods.decimals().call();
+    const multiplier = web3.utils.toBN(10).pow(web3.utils.toBN(decimals));
+
     const tokenBalance = await fromTokenContract.methods.balanceOf(walletAddress).call();
     const tokenBalanceBN = web3.utils.toBN(tokenBalance);
 
     const rawAmount = Math.random() * (SWAP_MAX_AMOUNT - SWAP_MIN_AMOUNT) + SWAP_MIN_AMOUNT;
-    const amountIn = web3.utils.toBN(web3.utils.toWei(rawAmount.toFixed(6)));
+    const amountIn = multiplier.mul(web3.utils.toBN(Math.floor(rawAmount * 10 ** 6).toString()));
+
     if (tokenBalanceBN.lt(amountIn)) {
-      const actual = web3.utils.fromWei(tokenBalanceBN);
+      const actual = Number(tokenBalance) / Number(multiplier);
       console.log(`⚠️ Skip swap, balance too low. Needed: ${rawAmount.toFixed(6)}, Wallet has: ${actual}`);
       return;
     }
