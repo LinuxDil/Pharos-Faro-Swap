@@ -138,15 +138,15 @@ async function performPharoswapSwap(privateKey, walletAddress, txIndex) {
     const tokenBalance = await fromTokenContract.methods.balanceOf(walletAddress).call();
     const tokenBalanceBN = web3.utils.toBN(tokenBalance);
 
-    const rawAmount = Math.random() * (SWAP_MAX_AMOUNT - SWAP_MIN_AMOUNT) + SWAP_MIN_AMOUNT;
+    const rawAmount = parseFloat((Math.random() * (SWAP_MAX_AMOUNT - SWAP_MIN_AMOUNT) + SWAP_MIN_AMOUNT).toFixed(2));
     const amountIn = web3.utils.toBN((rawAmount * Math.pow(10, decimals)).toFixed(0));
 
     const actual = Number(tokenBalance) / Number(multiplier);
     console.log(`💵 ${isUsdcToUsdt ? 'USDC' : 'USDT'} Balance: ${actual.toFixed(6)}`);
-    console.log(`🔄 Will try to swap: ${rawAmount.toFixed(6)} ${isUsdcToUsdt ? 'USDC' : 'USDT'}`);
+    console.log(`🔄 Will try to swap: ${rawAmount.toFixed(2)} ${isUsdcToUsdt ? 'USDC' : 'USDT'}`);
 
     if (tokenBalanceBN.lt(amountIn)) {
-      console.log(`⚠️ Skip swap, balance too low. Needed: ${rawAmount.toFixed(6)}, Wallet has: ${actual}`);
+      console.log(`⚠️ Skip swap, balance too low. Needed: ${rawAmount.toFixed(2)}, Wallet has: ${actual}`);
       return;
     }
 
@@ -204,7 +204,7 @@ async function performPharoswapSwap(privateKey, walletAddress, txIndex) {
     const signedTx = await web3.eth.accounts.signTransaction(tx, privateKey);
     const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
 
-    console.log(`✅ TX #${txIndex + 1}: Swapped ${rawAmount.toFixed(6)} ${isUsdcToUsdt ? 'USDC → USDT' : 'USDT → USDC'} | TX: ${receipt.transactionHash}`);
+    console.log(`✅ TX #${txIndex + 1}: Swapped ${rawAmount.toFixed(2)} ${isUsdcToUsdt ? 'USDC → USDT' : 'USDT → USDC'} | TX: ${receipt.transactionHash}`);
   } catch (e) {
     console.error(`❌ TX #${txIndex + 1} swap error:`, e.message);
   } finally {
