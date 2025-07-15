@@ -197,8 +197,8 @@ class Faroswap:
             return None
 
     def generate_swap_option(self):
-        from_ticker = "USDC"
-        to_ticker = "USDT"
+        valid_pairs = [("USDT", "USDC"), ("USDC", "USDT")]  # hanya dua jenis swap
+        from_ticker, to_ticker = random.choice(valid_pairs)
 
         def get_contract(ticker):
             return getattr(self, f"{ticker}_CONTRACT_ADDRESS")
@@ -211,11 +211,11 @@ class Faroswap:
         amount = get_amount(from_ticker)
 
         return {
-            "swap_option": f"{from_ticker} to {to_ticker}",
-            "from_token": from_token,
-            "to_token": to_token,
-            "ticker": from_ticker,
-            "amount": amount
+           "swap_option": f"{from_ticker} to {to_ticker}",
+           "from_token": from_token,
+           "to_token": to_token,
+           "ticker": from_ticker,
+           "amount": amount
     }
     
     def generate_lp_option(self):
