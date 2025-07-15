@@ -912,51 +912,8 @@ class Faroswap:
                 f"{Fore.RED+Style.BRIGHT} Perform On-Chain Failed {Style.RESET_ALL}"
             )
 
-    async def process_option_1(self, account: str, address: str, use_proxy):
-        self.log(f"{Fore.CYAN+Style.BRIGHT}Deposit WPHRS:{Style.RESET_ALL}                      ")
 
-        balance = await self.get_token_balance(address, self.PHRS_CONTRACT_ADDRESS, use_proxy)
-        self.log(
-            f"{Fore.CYAN+Style.BRIGHT}     Balance :{Style.RESET_ALL}"
-            f"{Fore.WHITE+Style.BRIGHT} {balance} PHRS {Style.RESET_ALL}"
-        )
-        self.log(
-            f"{Fore.CYAN+Style.BRIGHT}     Amount  :{Style.RESET_ALL}"
-            f"{Fore.WHITE+Style.BRIGHT} {self.deposit_amount} PHRS {Style.RESET_ALL}"
-        )
-
-        if not balance or balance <=  self.deposit_amount:
-            self.log(
-                f"{Fore.CYAN+Style.BRIGHT}     Status  :{Style.RESET_ALL}"
-                f"{Fore.YELLOW+Style.BRIGHT} Insufficient PHRS Token Balance {Style.RESET_ALL}"
-            )
-            return
-        
-        await self.process_perform_deposit(account, address, use_proxy)
-
-    async def process_option_2(self, account: str, address: str, use_proxy):
-        self.log(f"{Fore.CYAN+Style.BRIGHT}Withdraw PHRS:{Style.RESET_ALL}                      ")
-
-        balance = await self.get_token_balance(address, self.WPHRS_CONTRACT_ADDRESS, use_proxy)
-        self.log(
-            f"{Fore.CYAN+Style.BRIGHT}     Balance :{Style.RESET_ALL}"
-            f"{Fore.WHITE+Style.BRIGHT} {balance} WPHRS {Style.RESET_ALL}"
-        )
-        self.log(
-            f"{Fore.CYAN+Style.BRIGHT}     Amount  :{Style.RESET_ALL}"
-            f"{Fore.WHITE+Style.BRIGHT} {self.withdraw_amount} WPHRS {Style.RESET_ALL}"
-        )
-
-        if not balance or balance <=  self.withdraw_amount:
-            self.log(
-                f"{Fore.CYAN+Style.BRIGHT}     Status  :{Style.RESET_ALL}"
-                f"{Fore.YELLOW+Style.BRIGHT} Insufficient WPHRS Token Balance {Style.RESET_ALL}"
-            )
-            return
-        
-        await self.process_perform_withdraw(account, address, use_proxy)
-
-    async def process_option_3(self, account: str, address: str, use_proxy: bool):
+    async def process_option_1(self, account: str, address: str, use_proxy: bool):
         self.log(f"{Fore.CYAN+Style.BRIGHT}Random Swap  :{Style.RESET_ALL}                       ")
 
         for i in range(self.swap_count):
@@ -998,7 +955,7 @@ class Faroswap:
             await self.process_perform_swap(account, address, from_token, to_token, amount, use_proxy)
             await self.print_timer()
 
-    async def process_option_4(self, account: str, address: str, use_proxy: bool):
+    async def process_option_2(self, account: str, address: str, use_proxy: bool):
         self.log(f"{Fore.CYAN+Style.BRIGHT}Add Liquidity:{Style.RESET_ALL}                       ")
 
         for i in range(self.add_lp_count):
@@ -1087,21 +1044,9 @@ class Faroswap:
             await self.process_option_2(account, address, use_proxy)
 
         elif option == 3:
-            await self.process_option_3(account, address, use_proxy)
+            await self.process_option_1(account, address, use_proxy)
 
-        elif option == 4:
-            await self.process_option_4(account, address, use_proxy)
-
-        elif option == 5:
-            if self.dp_or_wd_option == 1:
-                await self.process_option_1(account, address, use_proxy)
-
-            elif self.dp_or_wd_option == 2:
-                await self.process_option_2(account, address, use_proxy)
-                
-            await self.process_option_3(account, address, use_proxy)
-
-            await self.process_option_4(account, address, use_proxy)
+            await self.process_option_1(account, address, use_proxy)
         
     async def main(self):
         try:
@@ -1120,7 +1065,7 @@ class Faroswap:
                 self.clear_terminal()
                 self.welcome()
                 self.log(
-                    f"{Fore.GREEN + Style.BRIGHT}Account's Total: {Style.RESET_ALL}"
+                    f"{Fore.GREEN + Style.BRIGHT}Total Account's: {Style.RESET_ALL}"
                     f"{Fore.WHITE + Style.BRIGHT}{len(accounts)}{Style.RESET_ALL}"
                 )
 
