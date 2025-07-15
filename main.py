@@ -207,7 +207,7 @@ class Faroswap:
             return mask_account
         except Exception as e:
             return None
-#dari sini yagesya
+#mulai dari sini
 def generate_swap_option(self):
     from_ticker = "USDC"
     to_ticker = "USDT"
@@ -229,6 +229,7 @@ def generate_swap_option(self):
         "ticker": from_ticker,
         "amount": amount
     }
+
     
     def generate_lp_option(self):
         tickers = ["USDC", "USDT"]
@@ -622,7 +623,8 @@ def generate_swap_option(self):
                     print(f"{Fore.RED + Style.BRIGHT}Please enter positive number.{Style.RESET_ALL}")
             except ValueError:
                 print(f"{Fore.RED + Style.BRIGHT}Invalid input. Enter a number.{Style.RESET_ALL}")
-        #PAS MANTAP
+
+        
         while True:
             try:
                 amount = float(input(f"{Fore.YELLOW + Style.BRIGHT}Enter USDC Amount for Each Swap Tx [1 or 0.01 or 0.001, etc in decimals] -> {Style.RESET_ALL}").strip())
@@ -644,6 +646,28 @@ def generate_swap_option(self):
                     print(f"{Fore.RED + Style.BRIGHT}USDT Amount must be greater than 0.{Style.RESET_ALL}")
             except ValueError:
                 print(f"{Fore.RED + Style.BRIGHT}Invalid input. Enter a float or decimal number.{Style.RESET_ALL}")
+        
+        # while True:
+        #     try:
+        #         amount = float(input(f"{Fore.YELLOW + Style.BRIGHT}Enter WETH Amount for Each Swap Tx [1 or 0.01 or 0.001, etc in decimals] -> {Style.RESET_ALL}").strip())
+        #         if amount > 0:
+        #             self.weth_swap_amount = amount
+        #             break
+        #         else:
+        #             print(f"{Fore.RED + Style.BRIGHT}WETH Amount must be greater than 0.{Style.RESET_ALL}")
+        #     except ValueError:
+        #         print(f"{Fore.RED + Style.BRIGHT}Invalid input. Enter a float or decimal number.{Style.RESET_ALL}")
+        
+        # while True:
+        #     try:
+        #         amount = float(input(f"{Fore.YELLOW + Style.BRIGHT}Enter WBTC Amount for Each Swap Tx [1 or 0.01 or 0.001, etc in decimals] -> {Style.RESET_ALL}").strip())
+        #         if amount > 0:
+        #             self.wbtc_swap_amount = amount
+        #             break
+        #         else:
+        #             print(f"{Fore.RED + Style.BRIGHT}WBTC Amount must be greater than 0.{Style.RESET_ALL}")
+        #     except ValueError:
+        #         print(f"{Fore.RED + Style.BRIGHT}Invalid input. Enter a float or decimal number.{Style.RESET_ALL}")
 
     def print_add_lp_question(self):
         while True:
