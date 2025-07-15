@@ -559,71 +559,6 @@ class Faroswap:
             )
             await asyncio.sleep(1)
 
-    def print_dp_or_wd_question(self):
-        while True:
-            try:
-                print(f"{Fore.GREEN + Style.BRIGHT}Select Option:{Style.RESET_ALL}")
-                print(f"{Fore.WHITE + Style.BRIGHT}1. Deposit WPHRS{Style.RESET_ALL}")
-                print(f"{Fore.WHITE + Style.BRIGHT}2. Withdraw PHRS{Style.RESET_ALL}")
-                print(f"{Fore.WHITE + Style.BRIGHT}3. Skipping{Style.RESET_ALL}")
-                option = int(input(f"{Fore.BLUE + Style.BRIGHT}Choose [1/2/3] -> {Style.RESET_ALL}").strip())
-
-                if option in [1, 2, 3]:
-                    option_type = (
-                        "Deposit WPHRS" if option == 1 else 
-                        "Withdraw PHRS" if option == 2 else 
-                        "Skipping"
-                    )
-                    print(f"{Fore.GREEN + Style.BRIGHT}{option_type} Selected.{Style.RESET_ALL}")
-                    self.dp_or_wd_option = option
-                    break
-                else:
-                    print(f"{Fore.RED + Style.BRIGHT}Please enter either 1, 2, or 3.{Style.RESET_ALL}")
-            except ValueError:
-                print(f"{Fore.RED + Style.BRIGHT}Invalid input. Enter a number (1, 2, or 3).{Style.RESET_ALL}")
-
-        if option == 1:
-            self.print_deposit_question()
-
-        elif option == 2:
-            self.print_withdraw_question()
-
-    def print_deposit_question(self):
-        while True:
-            try:
-                amount = float(input(f"{Fore.YELLOW + Style.BRIGHT}Enter PHRS Amount for Deposit [1 or 0.01 or 0.001, etc in decimals] -> {Style.RESET_ALL}").strip())
-                if amount > 0:
-                    self.deposit_amount = amount
-                    break
-                else:
-                    print(f"{Fore.RED + Style.BRIGHT}PHRS Amount must be greater than 0.{Style.RESET_ALL}")
-            except ValueError:
-                print(f"{Fore.RED + Style.BRIGHT}Invalid input. Enter a float or decimal number.{Style.RESET_ALL}")
-    
-    def print_withdraw_question(self):
-        while True:
-            try:
-                amount = float(input(f"{Fore.YELLOW + Style.BRIGHT}Enter WPHRS Amount for Withdraw [1 or 0.01 or 0.001, etc in decimals] -> {Style.RESET_ALL}").strip())
-                if amount > 0:
-                    self.withdraw_amount = amount
-                    break
-                else:
-                    print(f"{Fore.RED + Style.BRIGHT}WPHRS Amount must be greater than 0.{Style.RESET_ALL}")
-            except ValueError:
-                print(f"{Fore.RED + Style.BRIGHT}Invalid input. Enter a float or decimal number.{Style.RESET_ALL}")
-    #untuk swap
-    def print_swap_question(self):
-        while True:
-            try:
-                tx_count = int(input(f"{Fore.YELLOW + Style.BRIGHT}How Many Times Do You Want To Make a Swap? -> {Style.RESET_ALL}").strip())
-                if tx_count > 0:
-                    self.swap_count = tx_count
-                    break
-                else:
-                    print(f"{Fore.RED + Style.BRIGHT}Please enter positive number.{Style.RESET_ALL}")
-            except ValueError:
-                print(f"{Fore.RED + Style.BRIGHT}Invalid input. Enter a number.{Style.RESET_ALL}")
-
         while True:
             try:
                 amount = float(input(f"{Fore.YELLOW + Style.BRIGHT}Enter USDC Amount for Each Swap Tx [1 or 0.01 or 0.001, etc in decimals] -> {Style.RESET_ALL}").strip())
@@ -709,19 +644,15 @@ class Faroswap:
         while True:
             try:
                 print(f"{Fore.GREEN + Style.BRIGHT}Select Option:{Style.RESET_ALL}")
-                print(f"{Fore.WHITE + Style.BRIGHT}1. Deposit WPHRS{Style.RESET_ALL}")
-                print(f"{Fore.WHITE + Style.BRIGHT}2. Withdraw PHRS{Style.RESET_ALL}")
-                print(f"{Fore.WHITE + Style.BRIGHT}3. Swap Random Pair{Style.RESET_ALL}")
-                print(f"{Fore.WHITE + Style.BRIGHT}4. Add Liquidty Pool{Style.RESET_ALL}")
-                print(f"{Fore.WHITE + Style.BRIGHT}5. Run All Features{Style.RESET_ALL}")
+                print(f"{Fore.WHITE + Style.BRIGHT}1. Swap Random Pair{Style.RESET_ALL}")
+                print(f"{Fore.WHITE + Style.BRIGHT}2. Add Liquidty Pool{Style.RESET_ALL}")
+                print(f"{Fore.WHITE + Style.BRIGHT}3. Run All Features{Style.RESET_ALL}")
                 option = int(input(f"{Fore.BLUE + Style.BRIGHT}Choose [1/2/3/4/5] -> {Style.RESET_ALL}").strip())
 
                 if option in [1, 2, 3, 4, 5]:
                     option_type = (
-                        "Deposit WPHRS" if option == 1 else 
-                        "Withdraw PHRS" if option == 2 else 
-                        "Swap Random Pair" if option == 3 else 
-                        "Add Liquidty Pool" if option == 4 else 
+                        "Swap Random Pair" if option == 1 else 
+                        "Add Liquidty Pool" if option == 2 else 
                         "Run All Features"
                     )
                     print(f"{Fore.GREEN + Style.BRIGHT}{option_type} Selected.{Style.RESET_ALL}")
