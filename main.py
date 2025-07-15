@@ -222,12 +222,12 @@ class Faroswap:
         to_token = get_contract(to_ticker)
         amount = get_amount(from_ticker)
 
-            return {
-                "swap_option": f"{from_ticker} to {to_ticker}",
-                "from_token": from_token,
-                "to_token": to_token,
-                "ticker": from_ticker,
-                "amount": amount
+        return {
+            "swap_option": f"{from_ticker} to {to_ticker}",
+            "from_token": from_token,
+            "to_token": to_token,
+            "ticker": from_ticker,
+            "amount": amount
     }
     
     def generate_lp_option(self):
@@ -645,27 +645,6 @@ class Faroswap:
             except ValueError:
                 print(f"{Fore.RED + Style.BRIGHT}Invalid input. Enter a float or decimal number.{Style.RESET_ALL}")
         
-        # while True:
-        #     try:
-        #         amount = float(input(f"{Fore.YELLOW + Style.BRIGHT}Enter WETH Amount for Each Swap Tx [1 or 0.01 or 0.001, etc in decimals] -> {Style.RESET_ALL}").strip())
-        #         if amount > 0:
-        #             self.weth_swap_amount = amount
-        #             break
-        #         else:
-        #             print(f"{Fore.RED + Style.BRIGHT}WETH Amount must be greater than 0.{Style.RESET_ALL}")
-        #     except ValueError:
-        #         print(f"{Fore.RED + Style.BRIGHT}Invalid input. Enter a float or decimal number.{Style.RESET_ALL}")
-        
-        # while True:
-        #     try:
-        #         amount = float(input(f"{Fore.YELLOW + Style.BRIGHT}Enter WBTC Amount for Each Swap Tx [1 or 0.01 or 0.001, etc in decimals] -> {Style.RESET_ALL}").strip())
-        #         if amount > 0:
-        #             self.wbtc_swap_amount = amount
-        #             break
-        #         else:
-        #             print(f"{Fore.RED + Style.BRIGHT}WBTC Amount must be greater than 0.{Style.RESET_ALL}")
-        #     except ValueError:
-        #         print(f"{Fore.RED + Style.BRIGHT}Invalid input. Enter a float or decimal number.{Style.RESET_ALL}")
 
     def print_add_lp_question(self):
         while True:
