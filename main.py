@@ -5,6 +5,8 @@ from aiohttp import ClientSession, ClientTimeout, ClientResponseError
 from aiohttp_socks import ProxyConnector
 from fake_useragent import FakeUserAgent
 from datetime import datetime
+from pyfiglet import Figlet
+import shutil
 from colorama import *
 import asyncio, random, json, time, os, pytz
 
@@ -103,13 +105,12 @@ class Faroswap:
         )
 
     def welcome(self):
-        print(
-            f"""
-        {Fore.GREEN + Style.BRIGHT}Faroswap{Fore.BLUE + Style.BRIGHT} Auto BOT
-            """
-            f"""
-        {Fore.GREEN + Style.BRIGHT}Rey? {Fore.YELLOW + Style.BRIGHT}<INI WATERMARK>
-            """
+        figlet = Figlet(font='ansi_shadow')
+        banner_lines = figlet.renderText('BG WIN').splitlines()
+        term_width = shutil.get_terminal_size().columns
+
+        for line in banner_lines:
+            print(Fore.GREEN + Style.BRIGHT + line.center(term_width) + Style.RESET_ALL
         )
 
     def format_seconds(self, seconds):
