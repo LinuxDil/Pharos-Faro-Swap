@@ -222,12 +222,12 @@ class Faroswap:
         to_token = get_contract(to_ticker)
         amount = get_amount(from_ticker)
 
-    return {
-        "swap_option": f"{from_ticker} to {to_ticker}",
-        "from_token": from_token,
-        "to_token": to_token,
-        "ticker": from_ticker,
-        "amount": amount
+            return {
+                "swap_option": f"{from_ticker} to {to_ticker}",
+                "from_token": from_token,
+                "to_token": to_token,
+                "ticker": from_ticker,
+                "amount": amount
     }
     
     def generate_lp_option(self):
