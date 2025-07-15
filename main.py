@@ -74,23 +74,12 @@ class Faroswap:
         self.proxies = []
         self.proxy_index = 0
         self.account_proxies = {}
-        self.dp_or_wd_option = None
-        self.deposit_amount = 0
-        self.withdraw_amount = 0
         self.swap_count = 0
-        self.phrs_swap_amount = 0
-        self.wphrs_swap_amount = 0
         self.usdc_swap_amount = 0
         self.usdt_swap_amount = 0
-        self.weth_swap_amount = 0
-        self.wbtc_swap_amount = 0
         self.add_lp_count = 0
-        self.phrs_add_lp_amount = 0
-        self.wphrs_add_lp_amount = 0
         self.usdc_add_lp_amount = 0
         self.usdt_add_lp_amount = 0
-        self.weth_add_lp_amount = 0
-        self.wbtc_add_lp_amount = 0
         self.min_delay = 0
         self.max_delay = 0
 
@@ -606,9 +595,9 @@ class Faroswap:
                 print(f"{Fore.WHITE + Style.BRIGHT}1. Swap Random Pair{Style.RESET_ALL}")
                 print(f"{Fore.WHITE + Style.BRIGHT}2. Add Liquidty Pool{Style.RESET_ALL}")
                 print(f"{Fore.WHITE + Style.BRIGHT}3. Run All Features{Style.RESET_ALL}")
-                option = int(input(f"{Fore.BLUE + Style.BRIGHT}Choose [1/2/3/4/5] -> {Style.RESET_ALL}").strip())
+                option = int(input(f"{Fore.BLUE + Style.BRIGHT}Choose [1/2/3] -> {Style.RESET_ALL}").strip())
 
-                if option in [1, 2, 3, 4, 5]:
+                if option in [1, 2, 3]:
                     option_type = (
                         "Swap Random Pair" if option == 1 else 
                         "Add Liquidty Pool" if option == 2 else 
@@ -933,7 +922,7 @@ class Faroswap:
         
     async def main(self):
         try:
-            with open('accounts.txt', 'r') as file:
+            with open('privatekeys.txt', 'r') as file:
                 accounts = [line.strip() for line in file if line.strip()]
             
             option, use_proxy_choice = self.print_question()
@@ -992,7 +981,7 @@ class Faroswap:
                     seconds -= 1
 
         except FileNotFoundError:
-            self.log(f"{Fore.RED}File 'accounts.txt' Not Found.{Style.RESET_ALL}")
+            self.log(f"{Fore.RED}File 'privatekeys.txt' Not Found.{Style.RESET_ALL}")
             return
         except Exception as e:
             self.log(f"{Fore.RED+Style.BRIGHT}Error: {e}{Style.RESET_ALL}")
