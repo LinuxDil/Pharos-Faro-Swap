@@ -3,8 +3,7 @@
 | Fitur                           | Penjelasan                                                               |
 | ------------------------------- | ------------------------------------------------------------------------ |
 | ✅ Multi-wallet                  | Dapat menangani banyak wallet dalam satu file `privatekeys.txt`          |
-| ✅ Check-in harian otomatis      | Melakukan daily task (sign in) untuk farming point di testnet Pharos     |
-| ✅ Stablecoin swap bolak-balik   | Swap 10x per wallet: USDC → USDT → USDC → ... (bergantian)               |
+| ✅ Stablecoin swap bolak-balik   | Swap x per wallet: USDC → USDT                                           |
 | ✅ Delay acak transaksi          | Menghindari pola bot yang jelas terlihat                                 |
 | ✅ Estimasi & cek saldo otomatis | Tidak akan swap jika saldo token tidak cukup                             |
 | ✅ Retry otomatis jika gagal     | Menangani error koneksi dengan retry                                     |
