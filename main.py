@@ -663,21 +663,14 @@ class Faroswap:
                 print(f"{Fore.RED + Style.BRIGHT}Invalid input. Enter a number (1, 2, 3, 4, or 5).{Style.RESET_ALL}")
 
         if option == 1:
-            self.print_deposit_question()
-
-        elif option == 2:
-            self.print_withdraw_question()
-
-        elif option == 3:
             self.print_swap_question()
             self.print_delay_question()
 
-        elif option == 4:
+        elif option == 2:
             self.print_add_lp_question()
             self.print_delay_question()
 
-        elif option == 5:
-            self.print_dp_or_wd_question()
+        elif option == 3:
             self.print_swap_question()
             self.print_add_lp_question()
             self.print_delay_question()
