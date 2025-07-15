@@ -207,29 +207,39 @@ class Faroswap:
             return mask_account
         except Exception as e:
             return None
-#mulai dari sini
-def generate_swap_option(self):
-    from_ticker = "USDC"
-    to_ticker = "USDT"
 
-    def get_contract(ticker):
-        return getattr(self, f"{ticker}_CONTRACT_ADDRESS")
+    def generate_swap_option(self):
+        valid_pairs = [
+            (from_t, to_t) for from_t in self.TICKERS for to_t in self.TICKERS
+            if from_t != to_t and not (
+                (from_t == "PHRS" and to_t == "WPHRS") or 
+                (from_t == "WPHRS" and to_t == "PHRS")
+            )
+        ]
 
-    def get_amount(ticker):
-        return getattr(self, f"{ticker.lower()}_swap_amount")
+        from_ticker, to_ticker = random.choice(valid_pairs)
 
-    from_token = get_contract(from_ticker)
-    to_token = get_contract(to_ticker)
-    amount = get_amount(from_ticker)
+        def get_contract(ticker):
+            if ticker == "PHRS":
+                return self.PHRS_CONTRACT_ADDRESS
+            return getattr(self, f"{ticker}_CONTRACT_ADDRESS")
 
-    return {
-        "swap_option": f"{from_ticker} to {to_ticker}",
-        "from_token": from_token,
-        "to_token": to_token,
-        "ticker": from_ticker,
-        "amount": amount
-    }
+        def get_amount(ticker):
+            return getattr(self, f"{ticker.lower()}_swap_amount")
 
+        from_token = get_contract(from_ticker)
+        to_token = get_contract(to_ticker)
+        amount = get_amount(from_ticker)
+
+        swap_option = f"{from_ticker} to {to_ticker}"
+
+        return  {
+            "swap_option": swap_option,
+            "from_token": from_token,
+            "to_token": to_token,
+            "ticker": from_ticker,
+            "amount": amount
+        }
     
     def generate_lp_option(self):
         tickers = ["USDC", "USDT"]
@@ -624,6 +634,27 @@ def generate_swap_option(self):
             except ValueError:
                 print(f"{Fore.RED + Style.BRIGHT}Invalid input. Enter a number.{Style.RESET_ALL}")
 
+        while True:
+            try:
+                amount = float(input(f"{Fore.YELLOW + Style.BRIGHT}Enter PHRS Amount for Each Swap Tx [1 or 0.01 or 0.001, etc in decimals] -> {Style.RESET_ALL}").strip())
+                if amount > 0:
+                    self.phrs_swap_amount = amount
+                    break
+                else:
+                    print(f"{Fore.RED + Style.BRIGHT}PHRS Amount must be greater than 0.{Style.RESET_ALL}")
+            except ValueError:
+                print(f"{Fore.RED + Style.BRIGHT}Invalid input. Enter a float or decimal number.{Style.RESET_ALL}")
+        
+        while True:
+            try:
+                amount = float(input(f"{Fore.YELLOW + Style.BRIGHT}Enter WPHRS Amount for Each Swap Tx [1 or 0.01 or 0.001, etc in decimals] -> {Style.RESET_ALL}").strip())
+                if amount > 0:
+                    self.wphrs_swap_amount = amount
+                    break
+                else:
+                    print(f"{Fore.RED + Style.BRIGHT}WPHRS Amount must be greater than 0.{Style.RESET_ALL}")
+            except ValueError:
+                print(f"{Fore.RED + Style.BRIGHT}Invalid input. Enter a float or decimal number.{Style.RESET_ALL}")
         
         while True:
             try:
