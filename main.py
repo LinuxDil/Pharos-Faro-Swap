@@ -677,59 +677,6 @@ class Faroswap:
 
                 return None
     
-    async def process_perform_deposit(self, account: str, address: str, use_proxy: bool):
-        tx_hash, block_number = await self.perform_deposit(account, address, use_proxy)
-        if tx_hash and block_number:
-            explorer = f"https://testnet.pharosscan.xyz/tx/{tx_hash}"
-            self.log(
-                f"{Fore.CYAN+Style.BRIGHT}     Status  :{Style.RESET_ALL}"
-                f"{Fore.GREEN+Style.BRIGHT} Deposit Success {Style.RESET_ALL}"
-            )
-            self.log(
-                f"{Fore.CYAN+Style.BRIGHT}     Block   :{Style.RESET_ALL}"
-                f"{Fore.WHITE+Style.BRIGHT} {block_number} {Style.RESET_ALL}"
-            )
-            self.log(
-                f"{Fore.CYAN+Style.BRIGHT}     Tx Hash :{Style.RESET_ALL}"
-                f"{Fore.WHITE+Style.BRIGHT} {tx_hash} {Style.RESET_ALL}"
-            )
-            self.log(
-                f"{Fore.CYAN+Style.BRIGHT}     Explorer:{Style.RESET_ALL}"
-                f"{Fore.WHITE+Style.BRIGHT} {explorer} {Style.RESET_ALL}"
-            )
-        else:
-            self.log(
-                f"{Fore.CYAN+Style.BRIGHT}     Status  :{Style.RESET_ALL}"
-                f"{Fore.RED+Style.BRIGHT} Perform On-Chain Failed {Style.RESET_ALL}"
-            )
-
-    async def process_perform_withdraw(self, account: str, address: str, use_proxy: bool):
-        tx_hash, block_number = await self.perform_withdraw(account, address, use_proxy)
-        if tx_hash and block_number:
-            explorer = f"https://testnet.pharosscan.xyz/tx/{tx_hash}"
-
-            self.log(
-                f"{Fore.CYAN+Style.BRIGHT}     Status  :{Style.RESET_ALL}"
-                f"{Fore.GREEN+Style.BRIGHT} Withdraw Success {Style.RESET_ALL}"
-            )
-            self.log(
-                f"{Fore.CYAN+Style.BRIGHT}     Block   :{Style.RESET_ALL}"
-                f"{Fore.WHITE+Style.BRIGHT} {block_number} {Style.RESET_ALL}"
-            )
-            self.log(
-                f"{Fore.CYAN+Style.BRIGHT}     Tx Hash :{Style.RESET_ALL}"
-                f"{Fore.WHITE+Style.BRIGHT} {tx_hash} {Style.RESET_ALL}"
-            )
-            self.log(
-                f"{Fore.CYAN+Style.BRIGHT}     Explorer:{Style.RESET_ALL}"
-                f"{Fore.WHITE+Style.BRIGHT} {explorer} {Style.RESET_ALL}"
-            )
-        else:
-            self.log(
-                f"{Fore.CYAN+Style.BRIGHT}     Status  :{Style.RESET_ALL}"
-                f"{Fore.RED+Style.BRIGHT} Perform On-Chain Failed {Style.RESET_ALL}"
-            )
-    
     async def process_perform_swap(self, account: str, address: str, from_token: str, to_token: str, amount: float, use_proxy: bool):
         tx_hash, block_number = await self.perform_swap(account, address, from_token, to_token, amount, use_proxy)
         if tx_hash and block_number:
