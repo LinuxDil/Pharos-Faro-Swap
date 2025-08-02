@@ -197,7 +197,7 @@ class Faroswap:
             return None
 
     def generate_swap_option(self):
-        valid_pairs = [("USDT", "USDC"), ("USDC", "USDT")]  # hanya dua jenis swap
+        valid_pairs = [("USDT", "USDC"), ("USDC", "USDT")]  # hanya dua jenis swap ya
         from_ticker, to_ticker = random.choice(valid_pairs)
 
         def get_contract(ticker):
